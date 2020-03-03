@@ -200,6 +200,8 @@ export default {
         })
           .then(res => {
             if (res.data.message) {
+              // 增加数量
+              this.$store.commit("addCount");
               this.$message.success("加入购物车成功");
             } else {
               this.$message.error("加入购物车失败");

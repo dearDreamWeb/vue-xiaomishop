@@ -75,6 +75,9 @@ export default {
                 this.$message.success("登录成功！");
                 // vuex 增加用户信息
                 this.$store.commit("setUserInfo", res.data);
+                // 把 商品的总数给vuex
+                this.$store.commit("setCount", res.data.num);
+                console.log(res.data);
                 this.$router.push({ name: "homeLink" });
               } else {
                 this.$message.error("用户名或密码错误！");
@@ -96,7 +99,7 @@ export default {
   //   监听用户是否登录，登录之后不能进入登录界面
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      if (vm.$store.getters.getUserInfo.isLogin) {
+      if (vm.$store.getters.getUserInfo.isLogin === "true") {
         vm.$router.go(-1);
       }
     });

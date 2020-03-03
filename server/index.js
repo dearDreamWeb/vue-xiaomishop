@@ -30,8 +30,18 @@ useRouter.use("/goods", (req, res) => {
             "goods": data
         })
     })
-})
+});
 
+// 删除购物车列表商品
+useRouter.delete("/deleteCartList", (req, res) => {
+    crud("DELETE FROM `cart` WHERE cartId = ?", [req.query.cartId], data => {
+        if (data) {
+            res.json({
+                "status": 1
+            })
+        }
+    })
+});
 
 let minPrice = 0;
 let maxPrice = 10000000000;
@@ -57,15 +67,26 @@ useRouter.use("/orderPrice", (req, res) => {
         })
     })
 })
-
-// 登录
+ 
+// 登录   把用户信息保存在session里面  并查询购物车总数
 useRouter.use("/login", (req, res) => {
     crud("SELECT * FROM `users` WHERE userName = ? AND password = ?", [req.query.userName, req.query.passWord], data => {
         if (data.length > 0) {
+            // 把用户信息保存在session里面
             req.session.userInfo = data[0];
-            res.json({
-                isLogin: 1,
-                data: req.session.userInfo
+            // 查询购物车总数
+            crud("SELECT * FROM `cart`LEFT JOIN `users` ON cart.uid = users.id WHERE cart.uid = ?;", [data[0].id], data1 => {
+                if (data1.length > 0) {
+                    let num = 0;
+                    data1.forEach(item => {
+                        num += item.count;
+                    });
+                    res.json({
+                        "isLogin": 1,
+                        "data": req.session.userInfo,
+                        num
+                    });
+                }
             })
         } else {
             res.json({
@@ -73,12 +94,12 @@ useRouter.use("/login", (req, res) => {
             })
         }
     })
-})
+});
 
 // 退出登录，注销session
 useRouter.use("/loginOut", (req, res) => {
     req.session.destroy(() => res.json({ "loginOut": true }));
-})
+});
 
 // 加入购物车
 useRouter.use("/addCart", (req, res) => {
@@ -113,6 +134,48 @@ useRouter.use("/addCart", (req, res) => {
         console.log("前后端userId不一样");
     }
 
+});
+
+// 获取购物车商品总数
+useRouter.use("/cartCount", (req, res) => {
+    crud("SELECT * FROM `cart`LEFT JOIN `users` ON cart.uid = users.id WHERE cart.uid = ?;", [req.query.userId], data => {
+        let num = 0;
+        data.forEach(item => {
+            num += item.count;
+        });
+        res.json({
+            num
+        });
+    });
+});
+
+// 初始化购物车界面购物车数据
+useRouter.use("/getCart", (req, res) => {
+    if (req.session.userInfo) {
+        crud("SELECT * FROM `cart` WHERE uid = ?", [req.session.userInfo.id], data => {
+            res.json({
+                "status": 1,
+                data
+            });
+        })
+    }
+
+});
+
+//更改购物车商品数量
+useRouter.put("/changeCount", (req, res) => {
+    crud("UPDATE `cart` SET count = ? WHERE cartId = ?", [req.query.count, req.query.cartId], data1 => {
+        // data ? res.json({ "status": 1 }) : false;
+        crud("SELECT * FROM `cart`LEFT JOIN `users` ON cart.uid = users.id WHERE cart.uid = ?;", [req.session.userInfo.id], data => {
+            let num = 0;
+            data.forEach(item => {
+                num += item.count;
+            });
+            res.json({
+                num
+            });
+        });
+    })
 })
 
 // 静态托管
