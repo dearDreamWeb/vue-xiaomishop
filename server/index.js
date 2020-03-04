@@ -20,6 +20,9 @@ app.use(cors(corsOptions));
 const useRouter = express.Router();
 app.use("/api", useRouter);
 
+// 引入收货地址的api
+require("./api/address")(useRouter,crud);
+
 // 初始化商品
 useRouter.use("/goods", (req, res) => {
     crud("SELECT * FROM `goods` ORDER BY price;", [], data => {

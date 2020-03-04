@@ -30,7 +30,7 @@ export default new Vuex.Store({
           "userId": data.data.id,
           "userName": data.data.userName
         }
-        state.isLogin = true;
+        state.isLogin = "true";
         state.userInfo = JSON.stringify(obj);
         window.sessionStorage.setItem("isLogin", true);
         window.sessionStorage.setItem("userInfo", JSON.stringify(obj));

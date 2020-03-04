@@ -6,6 +6,7 @@ import store from "./store";
 import "./registerServiceWorker";
 import "./axios";
 import "./plugin/elementUi";
+import "animate.css";
 
 Vue.config.productionTip = false;
 

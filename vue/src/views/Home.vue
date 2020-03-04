@@ -98,9 +98,8 @@ export default {
           init() {
             setTimeout(() => {
               this.start();
-            }, 100);
-
-            window.addEventListener("scroll", this.start.bind(this));
+            }, 300);
+            window.onscroll = this.start.bind(this);
           }
           /**
            * 先设置定时器进行节流(这次的节流和没节流没什么区别，因为时间太短了，就是做一下样子)
@@ -185,17 +184,18 @@ export default {
         } else {
           data.count++;
         }
-        let userId = JSON.parse(this.$store.getters.getUserInfo.userInfo).userId;
+        let userId = JSON.parse(this.$store.getters.getUserInfo.userInfo)
+          .userId;
         this.$axios({
           method: "get",
           url: "/addCart",
           params: {
-            "userId": userId,
-            "id": data.productId,
-            "name": data.productName,
-            "count": data.count,
-            "price": data.price,
-            "imgUrl": data.productImageUrl
+            userId: userId,
+            id: data.productId,
+            name: data.productName,
+            count: data.count,
+            price: data.price,
+            imgUrl: data.productImageUrl
           }
         })
           .then(res => {
@@ -218,6 +218,11 @@ export default {
   created() {
     this.initGoods();
     this.loading();
+  },
+  // 路由跳转，取消图片懒加载
+  beforeRouteLeave(to, from, next) {
+    window.onscroll = null;
+    next();
   },
   components: {
     NavBrand

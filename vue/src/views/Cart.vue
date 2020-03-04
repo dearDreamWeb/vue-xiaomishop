@@ -1,5 +1,8 @@
 <template>
   <el-row class="cart">
+    <nav-brand>
+      <slot>购物车</slot>
+    </nav-brand>
     <el-table
       ref="multipleTable"
       :data="tableData"
@@ -13,7 +16,8 @@
           <img :src="scope.row.productImageUrl" class="images" />
         </template>
       </el-table-column>
-      <el-table-column prop="productName" label="商品名称" align="center"> </el-table-column>
+      <el-table-column prop="productName" label="商品名称" align="center">
+      </el-table-column>
       <el-table-column prop="price" label="商品价格" align="center">
         <template slot-scope="scope"> ￥{{ scope.row.price }} </template>
       </el-table-column>
@@ -48,14 +52,22 @@
         >取消选择</el-button
       >
       <el-row class="result">
-        <span class="text">合计:￥{{ result }}</span>
-        <el-button type="success">结算</el-button>
+        <span class="text"
+          >合计:<span class="money">￥{{ result }}</span></span
+        >
+        <el-button
+          type="success"
+          :disabled="result === 0"
+          @click="$router.push({ name: 'addressLink' })"
+          >结算</el-button
+        >
       </el-row>
     </div>
   </el-row>
 </template>
 
 <script>
+import NavBrand from "../components/NavBrand";
 export default {
   data() {
     return {
@@ -148,6 +160,16 @@ export default {
     this.$nextTick(() => {
       this.initCart();
     });
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (vm.$store.getters.getUserInfo.isLogin != "true") {
+        vm.$router.go(-1);
+      }
+    });
+  },
+  components: {
+    NavBrand
   }
 };
 </script>
@@ -163,19 +185,19 @@ export default {
   .footer {
     position: relative;
     margin-top: 20px;
-    padding: 10px;
+    padding: 10px 0 10px 20px;
     background: #fff;
     .result {
       position: absolute;
       display: inline-block;
-      right: 160px;
-      @media screen and (max-width: 931px) {
-        right: 10px;
-      }
+      right: 20px;
       .text {
         padding-right: 10px;
         font-size: 1.2rem;
         line-height: 1.2rem;
+        .money {
+          color: #f40;
+        }
       }
     }
   }

@@ -77,7 +77,6 @@ export default {
                 this.$store.commit("setUserInfo", res.data);
                 // 把 商品的总数给vuex
                 this.$store.commit("setCount", res.data.num);
-                console.log(res.data);
                 this.$router.push({ name: "homeLink" });
               } else {
                 this.$message.error("用户名或密码错误！");
