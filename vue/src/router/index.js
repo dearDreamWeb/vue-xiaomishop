@@ -5,14 +5,16 @@ import Home from "../views/Home.vue";
 import Cart from "../views/Cart.vue";
 import Address from "../views/Address.vue";
 import Order from "../views/Order.vue";
+import ProduceOrder from "../views/ProduceOrder.vue";
+import Undefined from "../views/404.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path:"/",
-    name:"homeLink",
-    component:Home
+    path: "/",
+    name: "homeLink",
+    component: Home
   },
   {
     path: "/login",
@@ -33,6 +35,16 @@ const routes = [
     path: "/order",
     name: "orderLink",
     component: Order
+  },
+  {
+    path: "/produceOrder",
+    name: "produceOrderLink",
+    component: ProduceOrder
+  },
+  {
+    path: "*",
+    name: "undefinedLink",
+    component: Undefined
   }
 ];
 

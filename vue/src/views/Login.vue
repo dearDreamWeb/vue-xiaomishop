@@ -1,34 +1,40 @@
 <template>
-  <el-row class="login">
-    <el-form
-      :model="ruleForm"
-      status-icon
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
-      <el-form-item label="用户名" prop="name">
-        <el-input v-model.number="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="pass">
-        <el-input
-          type="password"
-          v-model="ruleForm.pass"
-          autocomplete="off"
-        ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-          >提交</el-button
-        >
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
-    </el-form>
+  <el-row class="login-wrapper">
+    <nav-brand>
+      <slot><span>登录</span></slot>
+    </nav-brand>
+    <el-row class="login">
+      <el-form
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        ref="ruleForm"
+        label-width="60px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="用户名" prop="name">
+          <el-input v-model.number="ruleForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="pass">
+          <el-input
+            type="password"
+            v-model="ruleForm.pass"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >提交</el-button
+          >
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-row>
   </el-row>
 </template>
 
 <script>
+import NavBrand from "../components/NavBrand"; // 头部条
 const LOGIN_OK = 1; // 登录成功
 export default {
   data() {
@@ -41,7 +47,8 @@ export default {
       }, 1000);
     };
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
+      let reg = /^\s*$/;
+      if (reg.test(value)) {
         callback(new Error("请输入密码"));
       } else {
         callback();
@@ -94,6 +101,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
+  },
+  components: {
+    NavBrand
   },
   //   监听用户是否登录，登录之后不能进入登录界面
   beforeRouteEnter(to, from, next) {

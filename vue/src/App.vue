@@ -18,4 +18,9 @@ export default {
 body {
   background: rgba(233, 245, 245, 0.5);
 }
+.el-message-box{
+  @media screen  and (max-width:981px){
+    width:80vw !important;
+  }
+}
 </style>

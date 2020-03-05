@@ -2,7 +2,7 @@
   <div class="header">
     <el-row>
       <el-col :span="4">
-        <a href="/">
+        <a href="javascript:;" @click="$router.push({ name: 'homeLink' })">
           <img src="../../public/logo.png" alt="logo" />
         </a>
       </el-col>

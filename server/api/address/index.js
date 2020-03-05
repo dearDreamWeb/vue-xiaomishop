@@ -50,4 +50,23 @@ module.exports = (useRouter, crud) => {
             });
         });
     });
+
+    // 接收到购物车选中的商品更新数据库对应的checked
+    useRouter.get("/updateCartChecked", (req, res) => {
+        let arr = req.query.arrCartId;
+        crud("UPDATE `cart` SET checked = 1 WHERE cartId IN (?)", [[...arr]], data => {
+            res.json({
+                "status": 1
+            });
+        })
+    });
+
+    // 当从地址界面跳转到其他界面（不是订单页面）时，把购物车选中的商品checked都为0
+    useRouter.put("/updateCartChecked", (req, res) => {
+        crud("UPDATE `cart` SET checked = 0", [], data => {
+            res.json({
+                "status": 1
+            });
+        });
+    })
 }

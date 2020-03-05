@@ -61,8 +61,14 @@
       </el-col>
     </el-row>
 
-    <!-- 下一步 -->
+    <!--上一步和 下一步 -->
     <el-row class="next">
+      <el-button
+        class="next-btn"
+        type="success"
+        @click.stop.prevent="$router.push({ name: 'cartLink' })"
+        >上一步</el-button
+      >
       <el-button class="next-btn" type="success" @click.stop.prevent="jump"
         >下一步</el-button
       >
@@ -191,6 +197,34 @@ export default {
   created() {
     this.initData();
   },
+  // 如果未登录就禁止访问
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (vm.$store.getters.getUserInfo.isLogin != "true") {
+        alert("请先登录！");
+        vm.$router.push({ name: "loginLink" });
+      }
+    });
+  },
+  // 当地址跳转的下个路由不是订单路由的话，把购物车选中的商品的数据库中的checked为0
+  beforeRouteLeave(to, from, next) {
+    if (to.name === "orderLink" && from.name === "addressLink") {
+      next();
+    } else {
+      this.$axios({
+        method: "put",
+        url: "/updateCartChecked"
+      })
+        .then(res => {
+          if (res.data.status === 1) {
+            next();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
   components: {
     vStep: Step,
     NavBrand,
@@ -245,7 +279,7 @@ export default {
     }
     @media screen and (max-width: 981px) {
       .next-btn {
-        width: 100%;
+        width: 48%;
       }
     }
   }

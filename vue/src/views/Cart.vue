@@ -55,10 +55,7 @@
         <span class="text"
           >合计:<span class="money">￥{{ result }}</span></span
         >
-        <el-button
-          type="success"
-          :disabled="result === 0"
-          @click="$router.push({ name: 'addressLink' })"
+        <el-button type="success" :disabled="result === 0" @click="jumpAddress"
           >结算</el-button
         >
       </el-row>
@@ -87,7 +84,7 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
-    // 被选中的行的数据信息被添加到数组中，最后赋值给multipleSelection
+    // 被选中的行的数据信息被添加到数组中，最后传到multipleSelection数组中
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -131,15 +128,44 @@ export default {
           console.log(err);
         });
     },
+    // 初始化购物车 并将购物车所有的商品都在数据库里显示为未选中
     initCart() {
-      this.$axios({
+      let p1 = this.$axios({
         method: "get",
         url: "/getCart"
+      });
+      let p2 = this.$axios({
+        method: "put",
+        url: "/updateCartChecked"
+      });
+      Promise.all([p1, p2])
+        .then(res => {
+          if (res[0].data.status == 1 && res[1].data.status == 1) {
+            this.tableData = res[0].data.data;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 跳转到地址
+    jumpAddress() {
+      let arrCartId = [];
+      this.multipleSelection.forEach(item => {
+        arrCartId.push(item.cartId);
+      });
+      this.$axios({
+        method: "get",
+        url: "/updateCartChecked",
+        params: {
+          arrCartId
+        }
       })
         .then(res => {
-          if (res.data.status == 1) {
-            this.tableData = res.data.data;
-          }
+          // 当选中购物车商品数据库修改成功后，跳转到地址
+          res.data.status === 1
+            ? this.$router.push({ name: "addressLink" })
+            : this.$message.error("购物车选中失败");
         })
         .catch(err => {
           console.log(err);
@@ -161,10 +187,12 @@ export default {
       this.initCart();
     });
   },
+  // 如果未登录，不允许进入购物车页面
   beforeRouteEnter(to, from, next) {
     next(vm => {
       if (vm.$store.getters.getUserInfo.isLogin != "true") {
-        vm.$router.go(-1);
+        alert("请先登录！");
+        vm.$router.push({ name: "loginLink" });
       }
     });
   },

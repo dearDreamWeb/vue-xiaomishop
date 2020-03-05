@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const history = require('connect-history-api-fallback');
 
 const crud = require("./crud"); // 引入crud接口
 
 require("./session")(app); // 引用session
+
+app.use(history());
 
 app.listen(3000);
 
@@ -22,6 +25,9 @@ app.use("/api", useRouter);
 
 // 引入收货地址的api
 require("./api/address")(useRouter,crud);
+
+// 引入订单的api
+require("./api/order")(useRouter,crud);
 
 // 初始化商品
 useRouter.use("/goods", (req, res) => {
