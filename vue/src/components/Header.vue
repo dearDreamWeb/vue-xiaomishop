@@ -10,7 +10,9 @@
         <router-link :to="{ name: 'loginLink' }">
           <p class="login">登录</p>
         </router-link>
-        <p class="register">注册</p>
+        <router-link :to="{ name: 'registerLink' }">
+          <p class="register">注册</p>
+        </router-link>
       </el-col>
       <el-col :span="20" class="loginTrue" v-else>
         <span class="userName">{{ getUserName }}</span>

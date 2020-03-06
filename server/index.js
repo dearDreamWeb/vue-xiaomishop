@@ -13,7 +13,7 @@ app.listen(3000);
 
 // 解决跨域
 const corsOptions = {
-    origin: "http://192.168.199.106:8080",
+    origin: "http://localhost:8080",
     optionsSuccessStatus: 200,
     credentials: true
 };
@@ -24,16 +24,16 @@ const useRouter = express.Router();
 app.use("/api", useRouter);
 
 // 引入收货地址的api
-require("./api/address")(useRouter,crud);
+require("./api/address")(useRouter, crud);
 
 // 引入订单的api
-require("./api/order")(useRouter,crud);
+require("./api/order")(useRouter, crud);
 
 // 初始化商品
 useRouter.use("/goods", (req, res) => {
     crud("SELECT * FROM `goods` ORDER BY price;", [], data => {
         data.forEach(item => {
-            item.productImageUrl = "http://192.168.199.106:3000/images/" + item.productImageUrl;
+            item.productImageUrl = "http://localhost:3000/images/" + item.productImageUrl;
         });
         res.json({
             "goods": data
@@ -76,7 +76,25 @@ useRouter.use("/orderPrice", (req, res) => {
         })
     })
 })
- 
+
+// 注册   先查询数据库是否已存在用户名   不存在再插入
+useRouter.use("/register", (req, res) => {
+    crud("SELECT * FROM `users` WHERE userName = ?", [req.query.userName], data => {
+        if (data.length > 0) {
+            res.json({
+                "status": 0
+            });
+        } else {
+            crud("INSERT INTO `users` SET ?", { "userName": req.query.userName, "password": req.query.passWord }, data1 => {
+                res.json({
+                    "status": 1
+                });
+            });
+        }
+    })
+
+})
+
 // 登录   把用户信息保存在session里面  并查询购物车总数
 useRouter.use("/login", (req, res) => {
     crud("SELECT * FROM `users` WHERE userName = ? AND password = ?", [req.query.userName, req.query.passWord], data => {
