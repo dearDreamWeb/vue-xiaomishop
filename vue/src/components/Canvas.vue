@@ -3,7 +3,9 @@
     <canvas width="250px" height="100px" ref="canvas" @click="curCanvas">
       该浏览器不支持canvas
     </canvas>
-    <a href="javascript:;" style="color:blue;padding-left:1rem;" @click="curCanvas">看不清？点击刷新</a>
+    <a href="javascript:;" class="refresh" @click="curCanvas"
+      >看不清？点击刷新</a
+    >
   </div>
 </template>
 
@@ -28,10 +30,28 @@ export default {
       for (let i = 0; i < 4; i++) {
         str += arr[this.randomValue(0, 61)];
       }
-      ctx.font = "3rem sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(str, canvasW / 2, canvasH / 2 + 20);
-      ctx.save();
+
+      // 核心代码
+      //设置4个内容 将canvas 平分成4分 然后让内容在1/4的空间旋转缩放
+      //原理 ：每次都是位移旋转之后再回复原位
+      for (let i = 0; i < str.length; i++) {
+        let colorR = this.randomValue(0, 256);
+        let colorG = this.randomValue(0, 256);
+        let colorB = this.randomValue(0, 256);
+        let deg = this.randomValue(-30, 30);
+        let x = this.randomValue(20, 30);
+        // 设置颜色 和字体大小以及样式
+        ctx.font = "3rem sans-serif";
+        ctx.fillStyle = `rgb(${colorR},${colorG},${colorB})`;
+        // 先把原点调到字符出现的位置，再旋转 ，然后填充字符
+        ctx.translate(x + 50 * i, 0);
+        ctx.rotate((Math.PI / 180) * deg);
+        ctx.fillText(str[i], 0, canvasH / 2 + 10);
+        // 把原点和旋转角度复位
+        ctx.rotate((Math.PI / 180) * -deg);
+        ctx.translate(-(x + 50 * i), 0);
+      }
+
       // 每次刷新验证码都向父组件用自定义事件传值
       this.$emit("nowVal", str);
     },
@@ -77,4 +97,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.refresh {
+  color: blue;
+  padding-left: 1rem;
+  @media screen and (min-width: 981px) and (max-width: 1200px) {
+    display: block;
+  }
+}
+</style>
