@@ -30,8 +30,6 @@
     "prettier": "^1.19.1",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11",
-    "minimist": ">=1.2.2",
-    "acorn": ">=6.4.1"
+    "vue-template-compiler": "^2.6.11"
   }
 }
