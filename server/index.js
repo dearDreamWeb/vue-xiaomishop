@@ -184,7 +184,7 @@ useRouter.use("/getCart", (req, res) => {
                 "status": 1,
                 data
             });
-        })
+        }) 
     }
 
 });

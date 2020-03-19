@@ -47,21 +47,23 @@ export default {
         regPhone.test(this.form.phone)
           ? false
           : this.$message.error("手机号码不正确");
-      }else {
-          this.$axios({
-            method: "get",
-            url: "/addAddress",
-            params: {
-              userName: this.form.name,
-              phone: this.form.phone,
-              address: this.form.address
-            }
-          }).then(res => {
-            if(res.data.status === 1) {
+      } else {
+        this.$axios({
+          method: "get",
+          url: "/addAddress",
+          params: {
+            userName: this.form.name,
+            phone: this.form.phone,
+            address: this.form.address
+          }
+        })
+          .then(res => {
+            if (res.data.status === 1) {
               this.$emit("closed");
               this.$message.success("添加地址成功！");
             }
-          }).catch(err => {
+          })
+          .catch(err => {
             console.log(err);
           });
       }

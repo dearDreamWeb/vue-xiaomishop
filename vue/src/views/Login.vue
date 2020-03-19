@@ -69,7 +69,10 @@ export default {
     };
     var checkConfirmCode = (rule, value, callback) => {
       // 校验看验证码是否输入正确
-      if (value.toString().toLowerCase() === this.nowConfirmCode.toString().toLowerCase()) {
+      if (
+        value.toString().toLowerCase() ===
+        this.nowConfirmCode.toString().toLowerCase()
+      ) {
         callback();
       } else {
         callback(new Error("验证码输入错误"));
@@ -117,7 +120,7 @@ export default {
               console.log(err);
             });
         } else {
-          this.$message.error("用户名或密码错误！");
+          this.$message.error("请修改错误信息！");
           return false;
         }
       });
