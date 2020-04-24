@@ -4,7 +4,7 @@
 # 技术栈
 主要用到的技术栈是  
 - express
-- vue3
+- vue
 - element-ui
 - mysql
 - sass
